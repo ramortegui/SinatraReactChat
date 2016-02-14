@@ -1,0 +1,17 @@
+<div id="page">
+<% if session[:nickname] %>
+  <div id="start">
+    <p>Hi <%= session[:nickname] %> </p>
+    <p><a href="/leave">leave</a> </p>
+  <div>
+  <div id="dashboard">
+  </div>
+<% else %>
+    <form method="post">
+      <label>Nick</label>
+      <input type="text" name="nickname" value="" required/>
+      <input type="submit" value="Start" />
+    </form>
+<% end %>
+  </div> 
+  <script type="text/babel" src="js/init.jsx"></script>
