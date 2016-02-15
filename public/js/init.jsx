@@ -72,16 +72,18 @@ var SendMessage = React.createClass({
   updateMessage: function(e){
     this.setState({ message: e.target.value });
   },
-  handleNewMessage: function(){
-    this.props.newMessage(this.state.message) 
+  handleNewMessage: function(e){
+    e.preventDefault();
+    this.props.newMessage(this.state.message);
     this.setState({ message: '' });
-    
   },
   render: function(){
     return (
       <div>
+        <form onSubmit={this.handleNewMessage}>
         <input type="text" value={this.state.message} onChange={this.updateMessage} />
-        <button onClick={this.handleNewMessage}>Send</button>
+        <button type="submit">Send</button>
+        </form>
       </div>
     );
   } 
