@@ -1,7 +1,12 @@
 require 'sinatra'
 require 'chat'
 require 'json'
-enable  :sessions
+use Rack::Session::Cookie, :key => 'rack.session',
+                           :domain => 'localhost',
+                           :path => '/',
+                           :expire_after => 30600, 
+                           :secret => 'a secret'
+
 set :views, settings.root + '/../views/'
 set :public_folder, File.dirname(__FILE__) + '/../public/'
 @c = Chat.instance
@@ -14,8 +19,6 @@ post '/' do
   session[:nickname] = params[:nickname]
   @c = Chat.instance
   @c.enter_room(session[:nickname],'test_room')
-  puts @c.get_rooms_general_info
-  puts session[:nickname]
   erb :index
 end
 get '/users' do
@@ -31,7 +34,8 @@ get '/messages' do
 end
 post '/messages' do
   @c = Chat.instance
-  @c.add_message(session[:nickname],'test_room',params[:message])
+  room_info = @c.get_room_info('test_room')
+  @c.add_message(session[:nickname],'test_room',params[:message]) if session[:nickname] != nil
   num_messages = room_info.messages.count > 15 ? 15 : room_info.messages.count
   JSON(room_info.messages[-num_messages,num_messages].map { |message| { :message => message.message, :nickname => message.user } })
 end
